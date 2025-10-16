@@ -3,22 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Xero Authentication</title>
-    <script>
-        // IMMEDIATE redirect - executes before anything else
-        (function() {
-            const params = new URLSearchParams(window.location.search);
-            const code = params.get('code');
-            if (code) {
-                const callbackUrl = 'canakincafe://oauth/callback?code=' + encodeURIComponent(code);
-                const state = params.get('state');
-                if (state) {
-                    callbackUrl += '&state=' + encodeURIComponent(state);
-                }
-                // Redirect to app
-                window.location.replace(callbackUrl);
-            }
-        })();
-    </script>
     <style>
         body {
             background: #000;
@@ -34,14 +18,50 @@
             text-align: center;
             padding: 40px;
         }
-        h1 { color: #10b981; }
+        h1 { color: #10b981; margin-bottom: 20px; }
+        .spinner {
+            border: 3px solid #333;
+            border-top: 3px solid #10b981;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>✓ Connected to Xero</h1>
+        <div class="spinner"></div>
         <p>Returning to Canakin Cafe...</p>
-        <p><small>If the app doesn't open, you can close this window.</small></p>
     </div>
+    
+    <script>
+        // Wait for page to fully load, then redirect
+        window.addEventListener('load', function() {
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get('code');
+            
+            if (code) {
+                // Give the page a moment to render before redirecting
+                setTimeout(function() {
+                    let callbackUrl = 'canakincafe://oauth/callback?code=' + encodeURIComponent(code);
+                    const state = params.get('state');
+                    if (state) {
+                        callbackUrl += '&state=' + encodeURIComponent(state);
+                    }
+                    
+                    console.log('Redirecting to app:', callbackUrl);
+                    window.location.href = callbackUrl;
+                }, 1000); // 1 second delay
+            }
+        });
+    </script>
 </body>
 </html>
+
