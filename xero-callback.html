@@ -2,97 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xero Authentication - Canakin Cafe</title>
+    <title>Xero Authentication</title>
     <script>
-        // Extract code IMMEDIATELY (before page loads)
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const state = urlParams.get('state');
-        if (code) {
-            let customUrl = 'canakincafe://oauth/callback?code=' + encodeURIComponent(code);
-            if (state) customUrl += '&state=' + encodeURIComponent(state);
-            window.location.replace(customUrl);
-        }
+        // IMMEDIATE redirect - executes before anything else
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get('code');
+            if (code) {
+                const callbackUrl = 'canakincafe://oauth/callback?code=' + encodeURIComponent(code);
+                const state = params.get('state');
+                if (state) {
+                    callbackUrl += '&state=' + encodeURIComponent(state);
+                }
+                // Redirect to app
+                window.location.replace(callbackUrl);
+            }
+        })();
     </script>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, sans-serif;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
             margin: 0;
-            background: #000000;
         }
         .container {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             text-align: center;
-            max-width: 400px;
+            padding: 40px;
         }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        p {
-            color: #666;
-            line-height: 1.6;
-        }
-        .success {
-            color: #10b981;
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
+        h1 { color: #10b981; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="success">✓</div>
-        <h1>Authentication Successful</h1>
-        <p>You have successfully connected to Xero. You can close this window and return to the Canakin Cafe app.</p>
+        <h1>✓ Connected to Xero</h1>
+        <p>Returning to Canakin Cafe...</p>
+        <p><small>If the app doesn't open, you can close this window.</small></p>
     </div>
-    
-    <script>
-        // Ensure page is fully loaded before redirecting
-        window.addEventListener('DOMContentLoaded', function() {
-            console.log('Page loaded, processing OAuth callback...');
-            
-            // Extract the callback URL and redirect to custom scheme
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-            const state = urlParams.get('state');
-            
-            console.log('Code received:', code ? 'Yes' : 'No');
-            
-            if (code) {
-                // Build custom URL scheme callback
-                let customUrl = 'canakincafe://oauth/callback?code=' + encodeURIComponent(code);
-                if (state) {
-                    customUrl += '&state=' + encodeURIComponent(state);
-                }
-                
-                console.log('Redirecting to:', customUrl);
-                
-                // Redirect immediately to the app
-                try {
-                    window.location.href = customUrl;
-                } catch (e) {
-                    console.error('Redirect failed:', e);
-                }
-                
-                // Keep the window open briefly to allow redirect to complete
-                setTimeout(() => {
-                    console.log('Redirect should have completed');
-                }, 500);
-            } else {
-                console.error('No authorization code found in URL');
-                document.body.style.display = 'flex';
-            }
-        });
-    </script>
 </body>
 </html>
-
