@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xero Authentication - Canakin Cafe</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #666;
+            line-height: 1.6;
+        }
+        .success {
+            color: #10b981;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success">✓</div>
+        <h1>Authentication Successful</h1>
+        <p>You have successfully connected to Xero. You can close this window and return to the Canakin Cafe app.</p>
+    </div>
+    
+    <script>
+        // Extract the callback URL and redirect to custom scheme
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+        
+        if (code) {
+            // Build custom URL scheme callback
+            let customUrl = 'canakincafe://oauth/callback?code=' + encodeURIComponent(code);
+            if (state) {
+                customUrl += '&state=' + encodeURIComponent(state);
+            }
+            
+            // Try to redirect to the app
+            window.location.href = customUrl;
+            
+            // If redirect doesn't work (app not installed), show success message
+            setTimeout(() => {
+                document.body.style.display = 'flex';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
+
